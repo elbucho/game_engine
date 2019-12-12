@@ -3,6 +3,7 @@
 
 #include "Graphics.h"
 #include "Player.h"
+#include "Input.h"
 #include <stdio.h>
 
 namespace GameEngine {
@@ -15,10 +16,13 @@ namespace GameEngine {
 	private:
 		Graphics* graphics = nullptr;
 		Player* player = nullptr;
+		Input* input = nullptr;
+
 		bool running = false;
 		void GameLoop();
 		void Draw();
 		void Update(float elapsedTime);
+		void HandleInput();
 	};
 }
 

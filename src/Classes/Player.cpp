@@ -1,14 +1,56 @@
 #include "Player.h"
 using namespace GameEngine;
 
-const int PLAYER_HEIGHT = 10;
-const int PLAYER_WIDTH = 10;
+const float PLAYER_HEIGHT = 10;
+const float PLAYER_WIDTH = 10;
 
-Player::Player(Graphics* graphics, int startX, int startY) {
+Player::Player(
+	Graphics* graphics, 
+	Input* input,
+	float startX, 
+	float startY
+) {
 	this->graphics = graphics;
+	this->input = input;
 	this->x = startX;
 	this->y = startY;
+}
 
+void Player::MoveX(int delta) {
+	this->x += delta; 
+}
+
+void Player::MoveY(int delta) {
+	this->y += delta;
+}
+
+void Player::HandleInput() {
+	if (this->input->WasKeyPressed(SDLK_d) || this->input->WasKeyPressed(SDLK_RIGHT)) {
+		this->x += 1.0f;
+
+		printf("x,y => %f,%f\n", this->x, this->y);
+	}
+
+	if (this->input->WasKeyPressed(SDLK_a) || this->input->WasKeyPressed(SDLK_LEFT)) {
+		this->x -= 1.0f;
+
+		printf("x,y => %f,%f\n", this->x, this->y);
+	}
+
+	if (this->input->WasKeyPressed(SDLK_w) || this->input->WasKeyPressed(SDLK_UP)) {
+		this->y -= 1.0f;
+
+		printf("x,y => %f,%f\n", this->x, this->y);
+	}
+
+	if (this->input->WasKeyPressed(SDLK_s) || this->input->WasKeyPressed(SDLK_DOWN)) {
+		this->y += 1.0f;
+
+		printf("x,y => %f,%f\n", this->x, this->y);
+	}
+}
+
+void Player::Update() {
 	// Draw the player
 	Color playerColor;
 	playerColor.red = 0;
@@ -18,10 +60,10 @@ Player::Player(Graphics* graphics, int startX, int startY) {
 
 	int playerX, playerY;
 
-	playerX = startX - (PLAYER_WIDTH / 2);
+	playerX = this->x - (PLAYER_WIDTH / 2);
 	playerX = playerX < 0 ? 0 : playerX;
 
-	playerY = startY - (PLAYER_HEIGHT / 2);
+	playerY = this->y - (PLAYER_HEIGHT / 2);
 	playerY = playerY < 0 ? 0 : playerY;
 
 	SDL_Rect playerPosition;
@@ -31,15 +73,4 @@ Player::Player(Graphics* graphics, int startX, int startY) {
 	playerPosition.w = PLAYER_WIDTH;
 
 	this->graphics->DrawRectangle(playerPosition, playerColor);
-	this->graphics->Render();
-}
-
-void Player::MoveX(int delta) {
-	this->x += delta; 
-	this->graphics->Render();
-}
-
-void Player::MoveY(int delta) {
-	this->y += delta;
-	this->graphics->Render();
 }

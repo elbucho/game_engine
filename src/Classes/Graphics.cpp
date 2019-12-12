@@ -55,8 +55,6 @@ void Graphics::SetBackgroundSolid(Color& color) {
 		);
 
 		SDL_RenderClear(this->renderer);
-
-		this->Render();
 	}
 }
 
@@ -71,8 +69,6 @@ void Graphics::DrawRectangle(SDL_Rect& rectangle, Color& color) {
 		);
 
 		SDL_RenderFillRect(this->renderer, &rectangle);
-
-		this->Render();
 	}
 }
 
