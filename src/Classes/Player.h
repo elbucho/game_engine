@@ -15,6 +15,7 @@ namespace GameEngine {
 		void MoveY(int delta);
 		void HandleInput();
 		void Update();
+		void Draw();
 	private:
 		Graphics* graphics;
 		Input* input;

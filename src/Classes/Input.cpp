@@ -36,10 +36,6 @@ void Input::FlushKeys() {
 	for (const auto& keyPair : this->releasedKeys) {
 		this->releasedKeys[keyPair.first] = false;
 	}
-
-/*	for (std::map<SDL_Keycode, bool>::iterator it = this->pressedKeys.begin(); it != this->pressedKeys.end(); ++it) {
-		this->pressedKeys[it->first] = false;
-	} */
 }
 
 bool Input::WasKeyPressed(SDL_Keycode code) {

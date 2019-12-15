@@ -14,7 +14,7 @@ namespace GameEngine {
 		void DrawRectangle(SDL_Rect &rectangle, Color &color);
 		void Render();
 
-		bool isRunning() { return this->running; }
+		bool IsRunning() { return this->running; }
 	private:
 		SDL_Window* window = nullptr;
 		SDL_Renderer* renderer = nullptr;

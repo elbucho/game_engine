@@ -144,18 +144,29 @@
     <ClCompile Include="src\Classes\Game.cpp" />
     <ClCompile Include="src\Classes\Graphics.cpp" />
     <ClCompile Include="src\Classes\Input.cpp" />
+    <ClCompile Include="src\Classes\Level.cpp" />
     <ClCompile Include="src\Classes\Player.cpp" />
+    <ClCompile Include="src\Includes\tinystr.cpp" />
+    <ClCompile Include="src\Includes\tinyxml.cpp" />
+    <ClCompile Include="src\Includes\tinyxmlerror.cpp" />
+    <ClCompile Include="src\Includes\tinyxmlparser.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Classes\Game.h" />
     <ClInclude Include="src\Classes\Graphics.h" />
     <ClInclude Include="src\Classes\Input.h" />
+    <ClInclude Include="src\Classes\Level.h" />
     <ClInclude Include="src\Classes\Player.h" />
     <ClInclude Include="src\Classes\Structs\Color.h" />
+    <ClInclude Include="src\Includes\tinystr.h" />
+    <ClInclude Include="src\Includes\tinyxml.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\vs_libs\SDL2\lib\x64\SDL2.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="src\Levels\TestLevel.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

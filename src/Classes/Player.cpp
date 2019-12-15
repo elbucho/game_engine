@@ -51,6 +51,10 @@ void Player::HandleInput() {
 }
 
 void Player::Update() {
+
+}
+
+void Player::Draw() {
 	// Draw the player
 	Color playerColor;
 	playerColor.red = 0;
