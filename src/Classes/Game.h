@@ -13,6 +13,7 @@ namespace GameEngine {
 		Game(const char* title, int width, int height);
 		~Game();
 
+		void AddPlayer(Player* player, float playerX, float playerY);
 		void LoadLevel(const char* level);
 		void Start();
 		bool IsRunning() { return this->running; }

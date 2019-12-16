@@ -14,9 +14,6 @@ Game::Game(const char* title, int width, int height) {
 
 		// Instantiate the Input class to capture user input
 		this->input = new Input();
-
-		// Draw the player
-		this->player = new Player(this->graphics, this->input, width / 2, height / 2);
 	}
 }
 
@@ -36,7 +33,7 @@ void Game::Start() {
 
 	while (this->running) {
 		float elapsedTime = 0.0f;
-		float currentTime = SDL_GetTicks() / 1000;
+		Uint32 currentTime = SDL_GetTicks() / 1000;
 		bool newEvents = false;
 
 		while (SDL_PollEvent(&event)) {
@@ -49,8 +46,6 @@ void Game::Start() {
 				break;
 			}
 
-			// Handle input related to the player
-			this->player->HandleInput();
 			newEvents = true;
 		}
 
@@ -72,7 +67,7 @@ void Game::Draw() {
 
 void Game::Update(float elapsedTime) {
 	this->level->Update();
-	this->player->Update();
+	this->player->Update(elapsedTime);
 }
 
 void Game::HandleInput()
@@ -96,4 +91,11 @@ void Game::LoadLevel(const char* level) {
 		this->level = nullptr;
 		this->running = false;
 	}
+}
+
+void Game::AddPlayer(Player* player, float playerX, float playerY) {
+	this->player = player;
+	this->player->AddInput(this->input);
+	this->player->AddGraphicsEngine(this->graphics);
+	this->player->SetPosition(playerX, playerY);
 }

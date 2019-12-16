@@ -25,14 +25,11 @@ void Level::Update() {
 }
 
 void Level::Draw() {
-	printf("Drawing Background\n");
 	this->graphics->SetBackgroundSolid(this->bgColor);
 }
 
 bool Level::LoadXML(const char* path) {
 	TiXmlDocument doc(path);
-
-	printf("File Path: %s\n", path);
 
 	if (!doc.LoadFile()) {
 		return false;
