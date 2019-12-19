@@ -1,6 +1,7 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
+#include <map>
 #include "Graphics.h"
 #include "Input.h"
 #include "Structs/Color.h"
@@ -22,9 +23,9 @@ namespace GameEngine {
 		void AddGraphicsEngine(Graphics* graphics) { this->graphics = graphics; }
 		void SetPosition(float x, float y) { this->x = x; this->y = y; }
 
-		void MoveX(Direction direction, float elapsedTime);
-		void MoveY(Direction direction, float elapsedTime);
-		void Update(float elapsedTime);
+		void MoveX(Direction direction);
+		void MoveY(Direction direction);
+		void Update(double elapsedTime);
 		void Draw();
 	private:
 		Graphics* graphics = nullptr;
@@ -33,6 +34,7 @@ namespace GameEngine {
 		float y = 0.0f;
 		float velocityX = 0.0f;
 		float velocityY = 0.0f;
+		std::map<Direction, double> elapsedHoldTime;
 	};
 }
 

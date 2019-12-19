@@ -16,6 +16,7 @@ namespace GameEngine {
 		bool WasKeyPressed(SDL_Keycode code);
 		bool WasKeyReleased(SDL_Keycode code);
 		bool IsKeyHeld(SDL_Keycode code);
+		bool IsKeyboardInput(SDL_Event& event);
 		bool IsGameRunning = true;
 	private:
 		std::map<SDL_Keycode, bool> pressedKeys;

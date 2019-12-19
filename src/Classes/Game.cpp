@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <string>
 #include <stdio.h>
+#include <chrono>
 
 using namespace GameEngine;
 
@@ -23,6 +24,8 @@ Game::~Game() {
 
 void Game::Start() {
 	SDL_Event event;
+	std::chrono::high_resolution_clock::time_point currentTime, newTime;
+	std::chrono::duration<double> elapsedTime;
 
 	if (this->level != nullptr) {
 		this->running = true;
@@ -31,9 +34,10 @@ void Game::Start() {
 		printf("Unable to load level\n");
 	}
 
+	this->Draw();
+	currentTime = std::chrono::high_resolution_clock::now();
+
 	while (this->running) {
-		float elapsedTime = 0.0f;
-		Uint32 currentTime = SDL_GetTicks() / 1000;
 		bool newEvents = false;
 
 		while (SDL_PollEvent(&event)) {
@@ -46,14 +50,19 @@ void Game::Start() {
 				break;
 			}
 
-			newEvents = true;
+			if (this->input->IsKeyboardInput(event)) {
+				newEvents = true;
+			}
 		}
 
 		this->input->FlushKeys();
-		elapsedTime = (SDL_GetTicks() / 1000) - currentTime;
+		newTime = std::chrono::high_resolution_clock::now();
+		elapsedTime = std::chrono::duration_cast<std::chrono::duration<double>>(newTime - currentTime);
+		currentTime = newTime;
 
 		if (newEvents) {
-			this->Update(elapsedTime);
+			printf("Game Elapsed Time: %f\n", elapsedTime.count());
+			this->Update(elapsedTime.count());
 			this->Draw();
 		}
 	}

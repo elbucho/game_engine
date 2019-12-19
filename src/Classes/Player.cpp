@@ -15,12 +15,14 @@ const float GRAVITY_MIN = 1.0f;			// Initial falling speed when not on ground
 const float GRAVITY_MAX = 8.0f;			// Maximum falling speed when not on the ground
 const float GRAVITY_SPEED_LAG = 0.75f;	// Amount of time it takes in seconds to reach maximum falling speed
 
-void Player::MoveX(Direction direction, float elapsedTime) {
+const float QUARTER_PI_RAD = 1.5708f;	// 90 degrees expressed in radians (sin / asin, etc only work with rad)
+
+void Player::MoveX(Direction direction) {
 	if (direction != Direction::LEFT && direction != Direction::RIGHT) {
 		return;
 	}
 
-	int multiplier = (direction == Direction::LEFT) ? -1 : 1;
+	float multiplier = (direction == Direction::LEFT) ? -1.0f : 1.0f;
 
 	/**
 	 * Using a sin wave to generate an asymptotic curve representing player movement
@@ -30,39 +32,29 @@ void Player::MoveX(Direction direction, float elapsedTime) {
 	 * movement speed at GROUND_SPEED_MAX, and setting a floor at GROUND_SPEED_MIN.
 	 */
 
-	if (abs(this->velocityX) < GROUND_SPEED_MIN) {
-		this->velocityX = GROUND_SPEED_MIN * multiplier;
-	}
-	else if (abs(this->velocityX) >= GROUND_SPEED_MAX) {
-		this->velocityX = GROUND_SPEED_MAX * multiplier;
-	}
-	else {
-		// Find out how long the movement button has been held so far
-		double velocityPct = abs(this->velocityX) / (GROUND_SPEED_MAX - GROUND_SPEED_MIN);
-		double totalElapsedTime = (asin(velocityPct) / 90.0f) * GROUND_SPEED_LAG;
-		elapsedTime += totalElapsedTime;
+	double elapsedTime = this->elapsedHoldTime[direction];
 
-		if (elapsedTime >= GROUND_SPEED_LAG) {
-			// We have been holding the key down as long or longer than GROUND_SPEED_LAG
-			this->velocityX = GROUND_SPEED_MAX * multiplier;
-		}
-		else {
-			// Convert the new elapsed time to velocity
-			double elapsedTimePct = ((double) elapsedTime / GROUND_SPEED_LAG) * 90.0f;
-			double newVelocity = sin(elapsedTimePct) * ((double) GROUND_SPEED_MAX - GROUND_SPEED_MIN);
-			this->velocityX = newVelocity * multiplier;
-		}
-	}
+	printf("Current Elapsed Time for %d: %f\n", direction, elapsedTime);
 
+	double elapsedPct = elapsedTime == 0.0f ? 0.0f : (abs(elapsedTime) / GROUND_SPEED_LAG);
+	double velocity = elapsedTime >= 1.0f ? 
+		GROUND_SPEED_MAX : 
+		sin(elapsedPct * QUARTER_PI_RAD) * GROUND_SPEED_MAX;
+
+	velocity = velocity < GROUND_SPEED_MIN ? GROUND_SPEED_MIN : velocity;
+
+	this->velocityX = velocity * multiplier;
 	this->x += this->velocityX;
+
+	printf("Current X velocity: %f\n", this->velocityX);
 }
 
-void Player::MoveY(Direction direction, float elapsedTime) {
+void Player::MoveY(Direction direction) {
 	if (direction != Direction::UP && direction != Direction::DOWN) {
 		return;
 	}
 
-	int multiplier = (direction == Direction::UP) ? -1 : 1;
+	float multiplier = (direction == Direction::UP) ? -1.0f : 1.0f;
 
 	/**
 	 * Using a sin wave to generate an asymptotic curve representing player movement
@@ -72,48 +64,54 @@ void Player::MoveY(Direction direction, float elapsedTime) {
 	 * movement speed at GROUND_SPEED_MAX, and setting a floor at GROUND_SPEED_MIN.
 	 */
 
-	if (abs(this->velocityY) < GROUND_SPEED_MIN) {
-		this->velocityY = GROUND_SPEED_MIN * multiplier;
-	}
-	else if (abs(this->velocityY) >= GROUND_SPEED_MAX) {
-		this->velocityY = GROUND_SPEED_MAX * multiplier;
-	}
-	else {
-		// Find out how long the movement button has been held so far
-		double velocityPct = abs(this->velocityY) / (GROUND_SPEED_MAX - GROUND_SPEED_MIN);
-		double totalElapsedTime = (asin(velocityPct) / 90.0f) * GROUND_SPEED_LAG;
-		elapsedTime += totalElapsedTime;
+	double elapsedTime = this->elapsedHoldTime[direction];
 
-		if (elapsedTime >= GROUND_SPEED_LAG) {
-			// We have been holding the key down as long or longer than GROUND_SPEED_LAG
-			this->velocityY = GROUND_SPEED_MAX * multiplier;
-		}
-		else {
-			// Convert the new elapsed time to velocity
-			double elapsedTimePct = ((double) elapsedTime / GROUND_SPEED_LAG) * 90.0f;
-			double newVelocity = sin(elapsedTimePct) * ((double) GROUND_SPEED_MAX - GROUND_SPEED_MIN);
-			this->velocityY = newVelocity * multiplier;
-		}
-	}
+	printf("Current Elapsed Time for %d: %f\n", direction, elapsedTime);
 
+	double elapsedPct = elapsedTime == 0.0f ? 0.0f : (abs(elapsedTime) / GROUND_SPEED_LAG);
+	double velocity = elapsedTime >= 1.0f ?
+		GROUND_SPEED_MAX :
+		sin(elapsedPct * QUARTER_PI_RAD) * GROUND_SPEED_MAX;
+
+	velocity = velocity < GROUND_SPEED_MIN ? GROUND_SPEED_MIN : velocity;
+
+	this->velocityY = velocity * multiplier;
 	this->y += this->velocityY;
+
+	printf("Current Y velocity: %f\n", this->velocityY);
 }
 
-void Player::Update(float elapsedTime) {
+void Player::Update(double elapsedTime) {
 	if (this->input->IsKeyHeld(SDLK_d) || this->input->IsKeyHeld(SDLK_RIGHT)) {
-		this->MoveX(Direction::RIGHT, elapsedTime);
+		this->elapsedHoldTime[Direction::RIGHT] += elapsedTime;
+		this->MoveX(Direction::RIGHT);
+	}
+	else {
+		this->elapsedHoldTime[Direction::RIGHT] = 0.0f;
 	}
 
 	if (this->input->IsKeyHeld(SDLK_a) || this->input->IsKeyHeld(SDLK_LEFT)) {
-		this->MoveX(Direction::LEFT, elapsedTime);
+		this->elapsedHoldTime[Direction::LEFT] += elapsedTime;
+		this->MoveX(Direction::LEFT);
+	}
+	else {
+		this->elapsedHoldTime[Direction::LEFT] = 0.0f;
 	}
 
 	if (this->input->IsKeyHeld(SDLK_w) || this->input->IsKeyHeld(SDLK_UP)) {
-		this->MoveY(Direction::UP, elapsedTime);
+		this->elapsedHoldTime[Direction::UP] += elapsedTime;
+		this->MoveY(Direction::UP);
+	}
+	else {
+		this->elapsedHoldTime[Direction::UP] = 0.0f;
 	}
 
 	if (this->input->IsKeyHeld(SDLK_s) || this->input->IsKeyHeld(SDLK_DOWN)) {
-		this->MoveY(Direction::DOWN, elapsedTime);
+		this->elapsedHoldTime[Direction::DOWN] += elapsedTime;
+		this->MoveY(Direction::DOWN);
+	}
+	else {
+		this->elapsedHoldTime[Direction::DOWN] = 0.0f;
 	}
 }
 

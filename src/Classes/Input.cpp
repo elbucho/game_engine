@@ -61,3 +61,7 @@ bool Input::IsKeyHeld(SDL_Keycode code) {
 
 	return this->heldKeys[code];
 }
+
+bool Input::IsKeyboardInput(SDL_Event& event) {
+	return event.type == SDL_KEYUP || event.type == SDL_KEYDOWN;
+}
